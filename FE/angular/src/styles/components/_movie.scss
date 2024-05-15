@@ -1,3 +1,7 @@
+.movies {
+  height: calc(100vh - 82px);
+  overflow-y: auto;
+}
 .movie,
 .movies {
   > li {
@@ -80,6 +84,7 @@
 
         button {
           margin-left: 10px;
+          cursor: pointer;
         }
       }
     }

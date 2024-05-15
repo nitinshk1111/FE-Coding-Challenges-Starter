@@ -1,6 +1,9 @@
 <div id="container">
   <div id="content">
-    <h1>{{ pageTitle }}</h1>
-    <router-outlet></router-outlet>
+    <nav class="nav-bar">
+      <a routerLink="/" routerLinkActive="active" class="link">Home</a>
+      <a routerLink="/movies" routerLinkActive="active" class="link">Movies</a>
+    </nav>
+    <div class="router-outlet"><router-outlet></router-outlet></div>
   </div>
 </div>

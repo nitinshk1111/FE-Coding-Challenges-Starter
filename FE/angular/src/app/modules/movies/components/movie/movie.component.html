@@ -1,0 +1,6 @@
+<app-go-back [links]="goBackLink" (navigateToBack)="navigateToBack()"></app-go-back>
+<ul *ngIf="movieDetails$ | async; let movie" class="movie">
+  <li class="grid grid-bleed">
+    <app-movie-tile [movie]="movie" [showDetails]="true" (goToImdb)="gotoImDb($event)"></app-movie-tile>
+  </li>
+</ul>

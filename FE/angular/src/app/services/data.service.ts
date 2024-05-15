@@ -3,40 +3,7 @@ import { Injectable } from '@angular/core';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, mergeMap, tap } from 'rxjs/operators';
 import { POSTER_URL, REPLACE_POSTER_URL, SERVICE_URL } from '../app.constant';
-
-interface SearchResults {
-  Response: string;
-  Search: Movie[];
-  totalResults: string;
-}
-
-interface Movie {
-  imdbID: string;
-  Poster: string;
-  Title: string;
-  Type: string;
-  Year: string | number;
-}
-
-interface MovieDetails extends Movie {
-  Actors: string;
-  Director: string;
-  Genre: string;
-  Plot: string;
-  Rated: string;
-  Released: string;
-  Runtime: string;
-  Writer: string;
-}
-
-export interface MovieComplete extends MovieDetails {
-  Year: number;
-}
-
-export interface MovieData {
-  Decades: number[];
-  Search: MovieComplete[];
-}
+import { MovieComplete, MovieData, MovieDetails, SearchResults } from '../modules/movies/interfaces/movie.interface';
 
 @Injectable({
   providedIn: 'root'

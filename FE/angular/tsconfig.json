@@ -2,6 +2,9 @@
   "compileOnSave": true,
   "compilerOptions": {
     "baseUrl": "./",
+    "paths": {
+      "@shared/*": ["src/app/modules/shared/components/*", "src/app//modules/shared/directives/*"]
+    },
     "outDir": "./dist/out-tsc",
     "esModuleInterop": true,
     "sourceMap": true,
