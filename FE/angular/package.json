@@ -7,7 +7,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --aot=true --base-href=/fe-code-test --delete-output-path=true --output-path=dist",
-    "test": "jest",
+    "test": "jest --coverage --verbose --watch",
     "test:watch": "ng test --watch",
     "lint": "ng lint"
   },

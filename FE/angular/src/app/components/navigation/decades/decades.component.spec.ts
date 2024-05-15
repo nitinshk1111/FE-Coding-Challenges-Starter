@@ -1,12 +1,12 @@
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { mockProvider, Spectator } from '@ngneat/spectator';
 import { createComponentFactory } from '@ngneat/spectator/jest';
-import { of } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { DecadesComponent } from './decades.component';
 
 const mockEvents = of([]);
 const mockRouter = mockProvider(Router, {
-  events: mockEvents
+  events: mockEvents as unknown as NavigationEnd
 });
 
 describe('DecadesComponent', () => {
@@ -61,5 +61,22 @@ describe('DecadesComponent', () => {
     test('should emit selected decade', () => {
       expect(emitSpy).toBeCalledWith(1990);
     });
+    test('should emit `All` decade', () => {
+      component.passDecade({ label: 'All', isActive: false, index: 0 });
+      expect(emitSpy).toBeCalledWith(undefined);
+    });
+  });
+
+  test('should check current url by subscribe to router events', () => {
+    const mockRouter = spectator.inject(Router);
+    const eventsSubject = new Subject<Event>();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    (mockRouter as any).events = eventsSubject.asObservable();
+    spectator.component.ngOnInit();
+
+    const expectedUrl = '/example-url';
+    const navigationEndEvent = new NavigationEnd(1, expectedUrl, expectedUrl);
+    eventsSubject.next(navigationEndEvent as unknown as Event);
+    expect(spectator.component.currentUrl).toBe('/example-url');
   });
 });

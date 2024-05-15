@@ -4,7 +4,6 @@
     max-width: 800px;
     margin-bottom: 28px;
     padding: $mainFontSize;
-    flex-direction: column;
     background: $paleGray;
     border-radius: $radius;
     border: 2px solid $darkerGray;
@@ -27,6 +26,9 @@
         font-weight: $fontWeightBold;
         height: $wideSpace;
         border-bottom: 1px solid $darkGray;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .details,
       .metadata {

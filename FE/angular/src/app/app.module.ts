@@ -12,6 +12,8 @@ import { GoImdbComponent } from './components/navigation/go-imdb/go-imdb.compone
 import { NavigationService } from './components/navigation/navigation.service';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { DataService } from './services/data.service';
+import { MovieTileComponent } from './components/movie-tile/movie-tile.component';
+import { ImageFallbackUrlDirective } from './directives/imageFallbackUrl.directive';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { DataService } from './services/data.service';
     GoDetailsComponent,
     GoImdbComponent,
     AppComponent,
-    DecadesComponent
+    DecadesComponent,
+    MovieTileComponent,
+    ImageFallbackUrlDirective
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [DataService, NavigationService],

@@ -1,10 +1,8 @@
-import { mockProvider, Spectator } from '@ngneat/spectator';
-import { createComponentFactory } from '@ngneat/spectator/jest';
-import { of } from 'rxjs';
-import { DataService } from '../../services/data.service';
+import { Spectator, createComponentFactory } from '@ngneat/spectator';
 import { MoviesComponent } from './movies.component';
+import { DataService, MovieComplete } from '../../services/data.service';
+import { of } from 'rxjs';
 
-const mockDecades = [2000];
 const mockMovies = [
   {
     Title: 'Mock Movie',
@@ -40,23 +38,25 @@ const mockMovies = [
   }
 ];
 
-const mockGetMovies = jest.fn().mockReturnValue(of({ Decades: mockDecades, Search: mockMovies }));
-const mockGetFilteredMovies = jest.fn().mockReturnValue([mockMovies[0]]);
-const mockDataService = mockProvider(DataService, {
-  getMovies: mockGetMovies,
-  getFilteredMovies: mockGetFilteredMovies
-});
-
-describe('MovieComponent', () => {
+describe('MoviesComponent', () => {
   let spectator: Spectator<MoviesComponent>;
   let component: MoviesComponent;
   const createComponent = createComponentFactory({
     component: MoviesComponent,
     imports: [],
     declarations: [],
-    providers: [mockDataService],
     shallow: true,
-    detectChanges: false
+    detectChanges: false,
+    providers: [
+      {
+        provide: DataService,
+        useValue: {
+          getMovies: () => of({ Decades: [1990, 2000, 2010], Search: mockMovies }),
+          getFilteredMovies: (movies: MovieComplete[], decade: number) =>
+            movies.filter((movie) => movie.Year >= decade && movie.Year < decade + 10)
+        }
+      }
+    ]
   });
 
   beforeEach(() => {
@@ -64,50 +64,37 @@ describe('MovieComponent', () => {
     component = spectator.component;
   });
 
-  test('should create the component', () => {
-    component.ngOnInit();
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('ngOnInit', () => {
-    beforeEach(() => {
-      component.ngOnInit();
-    });
-    test('should set decades', () => {
-      expect(component.decades).toEqual(mockDecades);
-    });
-    test('should set movies array', () => {
-      expect(component.movies).toEqual(mockMovies);
+  describe('filtered movies', () => {
+    test('should filter movies by decade', () => {
+      spectator.component.decadeSelectionChanges$.next(2000);
+      spectator.detectChanges();
+      let filterMovies = [];
+      component.moviesAndDecadesData$.subscribe((data) => (filterMovies = data.filteredMovies));
+      expect(filterMovies.length).toBe(1);
+      expect(spectator.queryAll('.movies li').length).toBe(1);
     });
   });
 
-  describe('displayMovies', () => {
-    beforeEach(() => {
-      component.ngOnInit();
+  describe('displayDecades', () => {
+    test('should display decades', () => {
+      let decades = [];
+      spectator.detectChanges();
+      component.moviesAndDecadesData$.subscribe((data) => (decades = data.decades));
+      expect(decades.length).toBe(3);
     });
-    describe('WHEN movies are defined', () => {
-      beforeEach(() => {
-        component.displayMovies();
-      });
-      test('should set filteredMovies', () => {
-        expect(component.filteredMovies).toEqual([mockMovies[0]]);
-      });
-      describe('AND a decade is passed in', () => {
-        beforeEach(() => {
-          component.displayMovies(2000);
-        });
-        test('should set currDecade', () => {
-          expect(component.currDecade).toEqual(2000);
-        });
-      });
-    });
-    describe('WHEN movies are undefined', () => {
-      test('should set filteredMovies to an empty array', () => {
-        component.movies = [];
-        spectator.detectComponentChanges();
-        component.displayMovies();
-        expect(component.filteredMovies).toEqual([]);
-      });
+  });
+
+  describe('WHEN movies are undefined', () => {
+    test('should not display movies if there are no filtered movies', () => {
+      const dataService = spectator.inject(DataService);
+      spyOn(dataService, 'getFilteredMovies').and.returnValue([]);
+      spectator.component.decadeSelectionChanges$.next(3000);
+      spectator.detectChanges();
+      expect(spectator.query('.movies')).toBeNull();
     });
   });
 });

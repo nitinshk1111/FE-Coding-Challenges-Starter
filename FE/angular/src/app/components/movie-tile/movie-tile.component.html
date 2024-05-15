@@ -1,0 +1,36 @@
+<div class="image col-3" tabindex="0"><img [src]="movie.Poster" imageFallbackUrl alt="movie poster" /></div>
+<div class="content col-9 col-grid">
+  <div class="title" [title]="movie.Title" tabindex="0">{{ movie.Title }}</div>
+  <ul class="metadata">
+    <li class="rated">
+      <div>{{ movie.Rated }}</div>
+    </li>
+    <li class="runtime">{{ movie.Runtime }}</li>
+    <li class="release">{{ movie.Released }}</li>
+  </ul>
+
+  <ul *ngIf="showDetails" class="details">
+    <li>
+      <strong>Director:</strong>
+      {{ movie.Director }}
+    </li>
+    <li>
+      <strong>Writer:</strong>
+      {{ movie.Writer }}
+    </li>
+    <li>
+      <strong>Stars:</strong>
+      {{ movie.Actors }}
+    </li>
+  </ul>
+  <div class="plot">
+    {{ movie.Plot }}
+  </div>
+  <div class="nav flex-footer">
+    <app-go-imdb *ngIf="showDetails; else imdbButton" [imdbId]="movie.imdbID"></app-go-imdb>
+  </div>
+</div>
+
+<ng-template #imdbButton>
+  <app-go-details [imdbId]="movie.imdbID"></app-go-details>
+</ng-template>
