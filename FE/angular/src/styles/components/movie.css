@@ -1,5 +1,5 @@
 .movies {
-  height: calc(100vh - 82px);
+  height: calc(100vh - 108px);
   overflow-y: auto;
 }
 .movie,
@@ -7,29 +7,29 @@
   > li {
     max-width: 800px;
     margin-bottom: 28px;
-    padding: $mainFontSize;
-    background: $paleGray;
-    border-radius: $radius;
-    border: 2px solid $darkerGray;
+    padding: 14px;
+    background: #e8ebee;
+    border-radius: 8px;
+    border: 2px solid #303436;
 
     .image {
       padding-right: 30px;
 
       img {
         width: 100%;
-        border-radius: $radius;
+        border-radius: 8px;
       }
     }
 
     .content {
-      color: $darkerGray;
+      color: #303436;
 
       .title {
-        font-family: $fontStackAccent;
-        font-size: $headerFontSize;
-        font-weight: $fontWeightBold;
-        height: $wideSpace;
-        border-bottom: 1px solid $darkGray;
+        font-family: 'Open Sans', Verdana, Tahoma, sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        height: 35px;
+        border-bottom: 1px solid #8d989e;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -37,33 +37,33 @@
       .details,
       .metadata {
         margin-top: 10px;
-        font-family: $fontStack;
+        font-family: sans-serif;
       }
       .details {
-        font-size: $smallFontSize;
+        font-size: 13px;
         li {
           margin-top: 5px;
         }
       }
       .metadata {
-        font-size: $mainFontSize;
+        font-size: 14px;
         overflow: hidden;
 
         li {
-          margin-left: $wideSpace;
+          margin-left: 35px;
           display: inline-block;
         }
 
         .rated {
-          color: $darkGray;
-          font-family: $fontStackRating;
+          color: #8d989e;
+          font-family: Courier, monospace;
           margin-left: 0;
 
           div {
             display: inline-block;
             padding: 5px 10px;
-            border: 1px solid $darkGray;
-            border-radius: $radius;
+            border: 1px solid #8d989e;
+            border-radius: 8px;
           }
         }
         .release {
@@ -75,9 +75,9 @@
       .plot {
         margin-top: 17px;
         margin-bottom: 10px;
-        font-family: $fontStack;
-        font-size: $plotFontSize;
-        font-weight: $fontWeightRegular;
+        font-family: sans-serif;
+        font-size: 16px;
+        font-weight: 400;
       }
       .nav {
         text-align: right;

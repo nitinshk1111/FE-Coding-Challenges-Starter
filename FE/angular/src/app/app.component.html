@@ -1,9 +1,9 @@
 <div id="container">
   <div id="content">
-    <nav class="nav-bar">
-      <a routerLink="/" routerLinkActive="active" class="link">Home</a>
-      <a routerLink="/movies" routerLinkActive="active" class="link">Movies</a>
+    <nav class="flex items-center bg-blue-500 p-3 gap-4 mb-4">
+      <a routerLink="/" routerLinkActive="active" class="text-white font-bold text-2xl">Home</a>
+      <a routerLink="/movies" routerLinkActive="active" class="text-white font-bold text-2xl">Movies</a>
     </nav>
-    <div class="router-outlet"><router-outlet></router-outlet></div>
+    <div class="px-4"><router-outlet></router-outlet></div>
   </div>
 </div>

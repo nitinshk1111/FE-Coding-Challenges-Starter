@@ -13,7 +13,7 @@ export interface Link extends BaseLink {
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss'],
+  styleUrls: ['./sidebar.component.css'],
   standalone: true,
   imports: [CommonModule]
 })

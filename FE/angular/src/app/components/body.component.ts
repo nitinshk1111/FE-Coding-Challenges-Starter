@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-body',
-  template: `<h2>Welcome to Movie list world</h2>
+  template: `<h2 class="font-bold text-3xl">Welcome to Movie list world</h2>
     <p>Here you can find all the movies you want to watch</p>
     <p>Enjoy by clicking the button</p>
     <button (click)="navigateToMovies()" class="movies-btn">Movies</button> `,
