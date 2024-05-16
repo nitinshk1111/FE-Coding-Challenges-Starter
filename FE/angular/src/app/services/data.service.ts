@@ -1,51 +1,17 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, isDevMode } from '@angular/core';
-import { forkJoin, Observable, of, throwError } from 'rxjs';
-import { catchError, map, mergeMap } from 'rxjs/operators';
-
-interface SearchResults {
-  Response: string;
-  Search: Movie[];
-  totalResults: string;
-}
-
-interface Movie {
-  imdbID: string;
-  Poster: string;
-  Title: string;
-  Type: string;
-  Year: string | number;
-}
-
-interface MovieDetails extends Movie {
-  Actors: string;
-  Director: string;
-  Genre: string;
-  Plot: string;
-  Rated: string;
-  Released: string;
-  Runtime: string;
-  Writer: string;
-}
-
-export interface MovieComplete extends MovieDetails {
-  Year: number;
-}
-
-export interface MovieData {
-  Decades: number[];
-  Search: MovieComplete[];
-}
+import { Injectable } from '@angular/core';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, mergeMap, tap } from 'rxjs/operators';
+import { POSTER_URL, REPLACE_POSTER_URL, SERVICE_URL } from '../app.constant';
+import { MovieComplete, MovieData, MovieDetails, SearchResults } from '../modules/movies/interfaces/movie.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
   private decades: number[] = [];
-  private posterUrl = 'https://m.media-amazon.com/images/M/';
-  private replacePosterUrl = '/assets/images/';
-  private serviceUrl = 'https://www.omdbapi.com/?apikey=f59b2e4b&';
   private storedMovies: MovieData = { Search: [], Decades: [] };
+  public movieDetails = new Map<string, MovieComplete>();
 
   constructor(private http: HttpClient) {}
 
@@ -59,14 +25,14 @@ export class DataService {
   }
 
   public getMovie(id: string): Observable<MovieComplete> {
-    return this.http.get<MovieDetails>(`${this.serviceUrl}i=${id}`).pipe(
+    return this.http.get<MovieDetails>(`${SERVICE_URL}i=${id}`).pipe(
       map(({ Actors, Director, Genre, imdbID, Plot, Poster, Rated, Released, Runtime, Title, Type, Writer, Year }) => ({
         Actors,
         Director,
         Genre,
         imdbID,
         Plot,
-        Poster: Poster.replace(this.posterUrl, this.replacePosterUrl),
+        Poster: Poster.replace(POSTER_URL, REPLACE_POSTER_URL),
         Rated,
         Released,
         Runtime,
@@ -74,7 +40,10 @@ export class DataService {
         Type,
         Writer,
         Year: parseInt(Year as string)
-      }))
+      })),
+      tap((movie) => {
+        this.movieDetails.set(id, movie);
+      })
     );
   }
 
@@ -83,20 +52,19 @@ export class DataService {
       return of(this.storedMovies);
     }
 
-    return this.http.get<SearchResults>(`${this.serviceUrl}s=Batman&type=movie`).pipe(
-      mergeMap(({ Search }) =>
-        forkJoin(
-          Search.map(({ imdbID, Year }) => {
-            // add decade to decades
-            const decade = Math.ceil(parseInt(Year as string) / 10) * 10 - 10;
-            if (this.decades.indexOf(decade) < 0) {
-              this.decades.push(decade);
-            }
-
-            return this.getMovie(imdbID);
-          })
-        )
-      ),
+    return this.http.get<SearchResults>(`${SERVICE_URL}s=Batman&type=movie`).pipe(
+      tap(({ Search }) => {
+        Search.forEach(({ Year }) => {
+          // add decade to decades
+          const decade = Math.ceil(parseInt(Year as string) / 10) * 10 - 10;
+          if (this.decades.indexOf(decade) < 0) {
+            this.decades.push(decade);
+          }
+        });
+      }),
+      mergeMap(({ Search }) => {
+        return forkJoin(Search.map(({ imdbID }) => this.getMovie(imdbID)));
+      }),
       map((Search) => {
         Search = Search.sort(({ Year: year1 }: MovieComplete, { Year: year2 }: MovieComplete) => year1 - year2);
         this.decades.sort((a, b) => a - b);
